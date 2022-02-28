@@ -3,18 +3,26 @@ Defines an environment. The environment gives its current state, available actio
 and reward based on action taken. It also changes the state based on the action taken.
 """
 
-from errors import InvalidMoveError
+from .errors import InvalidMoveError
 
 
 class Board:
-    def __init__(self, state):
+    def __init__(self, state=1):
         """
         Constructor for the Environment class.
         :param state: the initial state of the environment.
         """
         self.state = state
-        self.action_space = {1: [2, 4], 2: [1, 3, 5], 3: [], 4: [1, 5], 5: [2, 4, 6], 6: [3, 5]}
+        self.action_space = {1: [2, 4], 2: [1, 3, 5], 3: [3], 4: [1, 5], 5: [2, 4, 6], 6: [3, 5]}
         self.state_space = {1, 2, 3, 4, 5, 6}
+
+    @property
+    def game_over(self):
+        """
+        Gives the information if the game is over.
+        :return: <bool> True is game is over, False instead.
+        """
+        return self.state == 3
 
     def move(self, dest):
         """

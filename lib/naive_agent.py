@@ -5,17 +5,16 @@ using the Bellman equation.
 
 from collections import defaultdict
 
-from environment import Board
-from display import display_optimum_policy, display_state_values, display_state_action_values
+from .agent import Agent
 
 
-class Agent:
+class NaiveAgent(Agent):
     def __init__(self, gamma=0.9):
         """
         The agent is instantiated by using the discount factor.
         :param gamma: discount factor.
         """
-        self.gamma = gamma
+        super().__init__(gamma)
         self.pi = {}
         self.q = defaultdict(dict)
         self.v = {}
@@ -58,7 +57,6 @@ class Agent:
         for state in board.state_space:
             self.v[state] = self.calculate_state_value(board, state)
 
-        display_state_values(self)
         return self.v
 
     def calculate_state_action_values(self, board):
@@ -80,25 +78,12 @@ class Agent:
                     best_policy = dest
                     best_value = self.q[state][dest]
             self.pi[state] = best_policy
-
-        display_state_action_values(self)
         return self.q
 
-    def determine_optimum_policy(self, board):
+    def learn(self, board):
         """
-        Finds the optimum policy by using the state-action values and returns it.
-        :param board: Environment instance of the board.
-        :return: optimum policy using the state-action values for all the states.
+        Learn the state-action values.
+        :param board: <Environment> Environment instance.
+        :return: None
         """
-        if self.pi:
-            display_optimum_policy(self)
-            return self.pi
-        else:
-            self.calculate_state_action_values(board)
-            return self.determine_optimum_policy(board)
-
-
-board = Board(4)
-agent = Agent()
-agent.calculate_state_action_values(board)
-agent.determine_optimum_policy(board)
+        self.calculate_state_action_values(board)
